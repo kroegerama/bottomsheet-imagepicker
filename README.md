@@ -130,7 +130,7 @@ The setters are all **optional** and the builder will fallback to default values
         .multiSelectTitles(
             R.plurals.pick_multi,           //"you have selected <count> images
             R.plurals.pick_multi_more,      //"You have to select <min-count> more images"
-            R.string.pick_multi_limit      //"You cannot select more than <max> images"
+            R.string.pick_multi_limit       //"You cannot select more than <max> images"
         )
         .peekHeight(R.dimen.peekHeight)     //peek height of the bottom sheet
         .columnSize(R.dimen.columnSize)     //size of the columns (will be changed a little to fit)
