@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="imagePickerEmpty">No images found</string>
+    <string name="imagePickerLoading">Loading…</string>
+    <string name="toastImagePickerNoWritePermission">Write storage permission not granted :(</string>
+
+    <string name="imagePickerSingle">Please select an image</string>
+
+    <plurals name="imagePickerMulti">
+        <item quantity="one">You have selected one image</item>
+        <item quantity="other">You have selected %1$d images</item>
+    </plurals>
+    <plurals name="imagePickerMultiMore">
+        <item quantity="one">You have to select one more image</item>
+        <item quantity="other">You have to select %1$d more images</item>
+    </plurals>
+    <string name="imagePickerMultiLimit">You cannot select more than %1$d images</string>
+</resources>

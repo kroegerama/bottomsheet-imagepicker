@@ -1,0 +1,15 @@
+language: android
+jdk: oraclejdk8
+env:
+  global:
+    - ANDROID_TARGET=28
+    - ANDROID_ABI=armeabi-v7a
+    - BUILD_TOOLS_VERSION=28.0.3
+android:
+  components:
+  - tools
+  - platform-tools
+  - build-tools-${BUILD_TOOLS_VERSION}
+  - android-${ANDROID_TARGET}
+  - extra-google-m2repository
+  - extra-android-m2repository

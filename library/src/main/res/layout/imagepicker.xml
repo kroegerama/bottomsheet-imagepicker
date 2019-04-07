@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeightSmall"
+        android:layout_gravity="bottom"
+        android:background="#fff"
+        app:elevation="3dp">
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
+            android:text="@string/imagePickerSingle"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+        <ImageButton
+            android:id="@+id/btnClearSelection"
+            android:layout_width="?android:attr/listPreferredItemHeightSmall"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_clear"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/btnDone"
+            android:layout_width="?android:attr/listPreferredItemHeightSmall"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_done_btn"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/btnGallery"
+            android:layout_width="?android:attr/listPreferredItemHeightSmall"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_gallery_btn"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/btnCamera"
+            android:layout_width="?android:attr/listPreferredItemHeightSmall"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_camera_btn"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/imagePickerTileSpacing"
+        android:paddingBottom="@dimen/imagePickerTileSpacing"
+        android:scrollbarStyle="outsideOverlay"
+        tools:listitem="@layout/tile_image" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="32dp"
+            android:text="@string/imagePickerLoading"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+    </FrameLayout>
+
+</LinearLayout>

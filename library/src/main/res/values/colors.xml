@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bottomSheetTileShade">#80000000</color>
+    <color name="bottomSheetTileBackground">#171219</color>
+    <color name="bottomSheetTileImageBackground">#aaa</color>
+</resources>
