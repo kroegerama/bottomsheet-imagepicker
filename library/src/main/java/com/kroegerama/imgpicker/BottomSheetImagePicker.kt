@@ -127,7 +127,7 @@ class BottomSheetImagePicker internal constructor() :
             btnDone.isVisible = true
             btnDone.setOnClickListener {
                 onImagesSelectedListener?.onImagesSelected(adapter.getSelectedImages(), requestTag)
-                dismiss()
+                dismissAllowingStateLoss()
             }
             btnClearSelection.isVisible = true
             btnClearSelection.setOnClickListener { adapter.clear() }
@@ -161,7 +161,7 @@ class BottomSheetImagePicker internal constructor() :
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    dismiss()
+                    dismissAllowingStateLoss()
                 }
             }
         }
@@ -177,7 +177,7 @@ class BottomSheetImagePicker internal constructor() :
             }
             is ClickedTile.ImageTile -> {
                 onImagesSelectedListener?.onImagesSelected(listOf(tile.uri), requestTag)
-                dismiss()
+                dismissAllowingStateLoss()
             }
         }
     }
@@ -254,7 +254,7 @@ class BottomSheetImagePicker internal constructor() :
             REQUEST_PERMISSION_READ_STORAGE ->
                 if (grantResults.isPermissionGranted)
                     LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this)
-                else dismiss()
+                else dismissAllowingStateLoss()
             REQUEST_PERMISSION_WRITE_STORAGE ->
                 if (grantResults.isPermissionGranted)
                     launchCamera()
@@ -279,14 +279,14 @@ class BottomSheetImagePicker internal constructor() :
                 currentPhotoUri?.let { uri ->
                     onImagesSelectedListener?.onImagesSelected(listOf(uri), requestTag)
                 }
-                dismiss()
+                dismissAllowingStateLoss()
                 return
             }
             REQUEST_GALLERY -> {
                 data?.data?.let { uri ->
                     onImagesSelectedListener?.onImagesSelected(listOf(uri), requestTag)
                 }
-                dismiss()
+                dismissAllowingStateLoss()
                 return
             }
         }
