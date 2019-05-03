@@ -22,8 +22,8 @@ class AcMain : BaseActivity(), BottomSheetImagePicker.OnImagesSelectedListener {
 
     private fun pickSingle() {
         BottomSheetImagePicker.Builder(getString(R.string.file_provider))
-            .cameraButton(ButtonType.Tile)
-            .galleryButton(ButtonType.Tile)
+            .cameraButton(ButtonType.Button)
+            .galleryButton(ButtonType.Button)
             .singleSelectTitle(R.string.pick_single)
             .peekHeight(R.dimen.peekHeight)
             .requestTag("single")

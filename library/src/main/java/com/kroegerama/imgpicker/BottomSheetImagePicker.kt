@@ -236,6 +236,7 @@ class BottomSheetImagePicker internal constructor() :
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().time)
         val imageFileName = "IMG_" + timeStamp + "_"
         val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+        storageDir.mkdirs()
         val image = File.createTempFile(imageFileName, ".jpg", storageDir)
 
         val success = image.delete() //no need to create empty file; camera app will create it on success
@@ -465,10 +466,9 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
-        fun show(fm: FragmentManager, tag: String? = null) =
-            BottomSheetImagePicker().apply {
-                arguments = args
-            }.show(fm, tag)
+        fun build() = BottomSheetImagePicker().apply { arguments = args }
+
+        fun show(fm: FragmentManager, tag: String? = null) = build().show(fm, tag)
 
     }
 }
