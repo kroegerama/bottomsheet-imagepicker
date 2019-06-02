@@ -1,13 +1,16 @@
 package com.kroegerama.imgpicker
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -16,10 +19,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
@@ -67,6 +72,8 @@ class BottomSheetImagePicker internal constructor() :
     private var loadingRes = R.string.imagePickerLoading
     @StringRes
     private var emptyRes = R.string.imagePickerEmpty
+    @ColorInt
+    private var navigationBarColor = Color.BLACK
 
     private var onImagesSelectedListener: OnImagesSelectedListener? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
@@ -142,6 +149,7 @@ class BottomSheetImagePicker internal constructor() :
             adapter.selection = oldSelection.toHashSet()
         }
         selectionCountChanged(adapter.selection.size)
+        setNavigationBarColor()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = super.onCreateDialog(savedInstanceState).apply {
@@ -166,6 +174,19 @@ class BottomSheetImagePicker internal constructor() :
             }
         }
     }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private fun setNavigationBarColor() {
+        dialog?.window?.run {
+            this.navigationBarColor = navigationBarColor
+            if (this.navigationBarColor.isLight) {
+                decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            }
+        }
+    }
+
+    private val Int.isLight: Boolean
+        get() = ColorUtils.calculateLuminance(this) < 0.4
 
     private fun tileClick(tile: ClickedTile) {
         when (tile) {
@@ -327,6 +348,7 @@ class BottomSheetImagePicker internal constructor() :
 
         emptyRes = args.getInt(KEY_TEXT_EMPTY, emptyRes)
         loadingRes = args.getInt(KEY_TEXT_LOADING, loadingRes)
+        navigationBarColor = args.getInt(NAVIGATION_BAR_COLOR, navigationBarColor)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
@@ -397,6 +419,8 @@ class BottomSheetImagePicker internal constructor() :
         private const val STATE_CURRENT_URI = "stateUri"
         private const val STATE_SELECTION = "stateSelection"
 
+        private const val NAVIGATION_BAR_COLOR = "navigationBarColor"
+
         private const val MAX_CURSOR_IMAGES = 512
     }
 
@@ -447,6 +471,12 @@ class BottomSheetImagePicker internal constructor() :
 
         fun emptyText(@StringRes emptyRes: Int) = args.run {
             putInt(KEY_TEXT_EMPTY, emptyRes)
+            this@Builder
+        }
+
+        @TargetApi(Build.VERSION_CODES.O)
+        fun navigationBarColor(@ColorInt color: Int) = args.run {
+            putInt(NAVIGATION_BAR_COLOR, color)
             this@Builder
         }
 
