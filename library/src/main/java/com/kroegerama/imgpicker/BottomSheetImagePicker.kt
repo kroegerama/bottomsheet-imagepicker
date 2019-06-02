@@ -1,7 +1,6 @@
 package com.kroegerama.imgpicker
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Context
@@ -17,6 +16,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -24,7 +24,6 @@ import androidx.annotation.DimenRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
-import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
@@ -175,18 +174,25 @@ class BottomSheetImagePicker internal constructor() :
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
     private fun setNavigationBarColor() {
-        dialog?.window?.run {
-            this.navigationBarColor = navigationBarColor
-            if (this.navigationBarColor.isLight) {
-                decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            dialog?.window?.let { window ->
+                window.navigationBarColor = navigationBarColor
+                var systemUIVisibility = window.decorView.systemUiVisibility
+                if (window.navigationBarColor.isLight) {
+                    systemUIVisibility = systemUIVisibility or SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                    window.decorView.systemUiVisibility = systemUIVisibility
+                }
             }
         }
     }
 
     private val Int.isLight: Boolean
-        get() = ColorUtils.calculateLuminance(this) < 0.4
+        get() {
+            val darkness: Double =
+                1 - (0.299 * Color.red(this) + 0.587 * Color.green(this) + 0.114 * Color.blue(this)) / 255
+            return darkness < 0.4
+        }
 
     private fun tileClick(tile: ClickedTile) {
         when (tile) {
@@ -474,7 +480,6 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
-        @TargetApi(Build.VERSION_CODES.O)
         fun navigationBarColor(@ColorInt color: Int) = args.run {
             putInt(NAVIGATION_BAR_COLOR, color)
             this@Builder

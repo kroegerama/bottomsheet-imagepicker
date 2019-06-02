@@ -1,5 +1,6 @@
 package com.kroegerama.imgpicker.demo
 
+import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -26,6 +27,7 @@ class AcMain : BaseActivity(), BottomSheetImagePicker.OnImagesSelectedListener {
             .galleryButton(ButtonType.Button)
             .singleSelectTitle(R.string.pick_single)
             .peekHeight(R.dimen.peekHeight)
+            .navigationBarColor(Color.WHITE)
             .requestTag("single")
             .show(supportFragmentManager)
     }
@@ -34,6 +36,7 @@ class AcMain : BaseActivity(), BottomSheetImagePicker.OnImagesSelectedListener {
         BottomSheetImagePicker.Builder(getString(R.string.file_provider))
             .columnSize(R.dimen.columnSize)
             .multiSelect(3, 6)
+            .navigationBarColor(Color.WHITE)
             .multiSelectTitles(
                 R.plurals.pick_multi,
                 R.plurals.pick_multi_more,
