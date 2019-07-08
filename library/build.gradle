@@ -13,7 +13,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.2"
+        versionName "1.0.3"
     }
 
     buildTypes {
@@ -28,12 +28,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'androidx.core:core-ktx:1.1.0-alpha05'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha5'
-    api 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'androidx.core:core-ktx:1.1.0-rc02'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    api 'com.google.android.material:material:1.1.0-alpha07'
 
-    implementation 'com.kroegerama:android-kaiteki:2.2.2'
+    implementation 'com.kroegerama:android-kaiteki:2.6.0'
+    implementation 'com.kroegerama:recyclerview-kaiteki:1.0.4'
 
     implementation("com.github.bumptech.glide:glide:4.9.0") {
         exclude group: "com.android.support"
