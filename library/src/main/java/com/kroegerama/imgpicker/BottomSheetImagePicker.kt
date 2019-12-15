@@ -199,6 +199,10 @@ class BottomSheetImagePicker internal constructor() :
     }
 
     private fun launchCamera() {
+        if (!requireContext().hasCameraPermission) {
+            requestCameraPermission(REQUEST_PERMISSION_CAMERA)
+            return
+        }
         if (!requireContext().hasWriteStoragePermission) {
             requestWriteStoragePermission(REQUEST_PERMISSION_WRITE_STORAGE)
             return
@@ -262,6 +266,15 @@ class BottomSheetImagePicker internal constructor() :
                     Toast.makeText(
                         requireContext(),
                         R.string.toastImagePickerNoWritePermission,
+                        Toast.LENGTH_LONG
+                    ).show()
+            REQUEST_PERMISSION_CAMERA ->
+                if (grantResults.isPermissionGranted)
+                    launchCamera()
+                else
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.toastImagePickerNoCameraPermission,
                         Toast.LENGTH_LONG
                     ).show()
         }
@@ -368,6 +381,7 @@ class BottomSheetImagePicker internal constructor() :
 
         private const val REQUEST_PERMISSION_READ_STORAGE = 0x2000
         private const val REQUEST_PERMISSION_WRITE_STORAGE = 0x2001
+        private const val REQUEST_PERMISSION_CAMERA = 0x2002
 
         private const val REQUEST_PHOTO = 0x3000
         private const val REQUEST_GALLERY = 0x3001
