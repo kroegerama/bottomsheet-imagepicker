@@ -3,7 +3,6 @@
     <string name="imagePickerEmpty">No images found</string>
     <string name="imagePickerLoading">Loading…</string>
     <string name="toastImagePickerNoWritePermission">Write storage permission not granted :(</string>
-    <string name="toastImagePickerNoCameraPermission">Camera permission not granted :(</string>
 
     <string name="imagePickerSingle">Please select an image</string>
 
