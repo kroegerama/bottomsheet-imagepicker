@@ -3,6 +3,7 @@ package com.kroegerama.imgpicker
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -72,7 +73,13 @@ class BottomSheetImagePicker internal constructor() :
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
     private val adapter by lazy {
-        ImageTileAdapter(isMultiSelect, showCameraTile, showGalleryTile, ::tileClick, ::selectionCountChanged)
+        ImageTileAdapter(
+            isMultiSelect,
+            showCameraTile,
+            showGalleryTile,
+            ::tileClick,
+            ::selectionCountChanged
+        )
     }
 
     override fun onAttach(context: Context) {
@@ -95,7 +102,11 @@ class BottomSheetImagePicker internal constructor() :
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
         inflater.inflate(R.layout.imagepicker, container, false).also {
             (parentFragment as? OnImagesSelectedListener)?.let { onImagesSelectedListener = it }
         }
@@ -144,14 +155,15 @@ class BottomSheetImagePicker internal constructor() :
         selectionCountChanged(adapter.selection.size)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = super.onCreateDialog(savedInstanceState).apply {
-        setOnShowListener {
-            val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.peekHeight = resources.getDimensionPixelSize(peekHeight)
-            bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        super.onCreateDialog(savedInstanceState).apply {
+            setOnShowListener {
+                val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.peekHeight = resources.getDimensionPixelSize(peekHeight)
+                bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback)
+            }
         }
-    }
 
     private val bottomSheetCallback by lazy {
         object : BottomSheetBehavior.BottomSheetCallback() {
@@ -214,7 +226,10 @@ class BottomSheetImagePicker internal constructor() :
         }
         val photoUri = FileProvider.getUriForFile(requireContext(), providerAuthority, photoFile)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-        requireContext().packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        requireContext().packageManager.queryIntentActivities(
+            intent,
+            PackageManager.MATCH_DEFAULT_ONLY
+        )
             .forEach { info ->
                 val packageName = info.activityInfo.packageName
                 requireContext().grantUriPermission(
@@ -239,7 +254,8 @@ class BottomSheetImagePicker internal constructor() :
         storageDir.mkdirs()
         val image = File.createTempFile(imageFileName, ".jpg", storageDir)
 
-        val success = image.delete() //no need to create empty file; camera app will create it on success
+        val success =
+            image.delete() //no need to create empty file; camera app will create it on success
         if (!success && BuildConfig.DEBUG) {
             Log.d(TAG, "Failed to delete temp file: $image")
         }
@@ -249,7 +265,11 @@ class BottomSheetImagePicker internal constructor() :
         return image
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             REQUEST_PERMISSION_READ_STORAGE ->
                 if (grantResults.isPermissionGranted)
@@ -332,7 +352,7 @@ class BottomSheetImagePicker internal constructor() :
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         if (id != LOADER_ID) throw IllegalStateException("illegal loader id: $id")
         val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val projection = arrayOf(MediaStore.Images.Media._ID)
         val sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC"
         return CursorLoader(requireContext(), uri, projection, null, null, sortOrder)
     }
@@ -342,11 +362,15 @@ class BottomSheetImagePicker internal constructor() :
         tvEmpty.setText(emptyRes)
         data ?: return
 
-        val columnIndex = data.getColumnIndex(MediaStore.Images.Media.DATA)
+        val columnIndex = data.getColumnIndex(MediaStore.Images.Media._ID)
         val items = ArrayList<Uri>()
         while (items.size < MAX_CURSOR_IMAGES && data.moveToNext()) {
-            val str = data.getString(columnIndex)
-            items.add(Uri.fromFile(File(str)))
+            val id = data.getLong(columnIndex)
+            val contentUri = ContentUris.withAppendedId(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                id
+            )
+            items.add(contentUri)
         }
         data.moveToFirst()
         adapter.imageList = items
