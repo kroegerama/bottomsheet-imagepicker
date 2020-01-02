@@ -10,9 +10,9 @@ import com.kroegerama.kaiteki.baseui.BaseActivity
 import com.kroegerama.kaiteki.toast
 import kotlinx.android.synthetic.main.ac_main.*
 
-class AcMain : BaseActivity(), BottomSheetImagePicker.OnImagesSelectedListener {
-
-    override val layoutResource = R.layout.ac_main
+class AcMain : BaseActivity(
+    layout = R.layout.ac_main
+), BottomSheetImagePicker.OnImagesSelectedListener {
 
     override fun setupGUI() {
         btnPickSingle.setOnClickListener { pickSingle() }
@@ -48,7 +48,11 @@ class AcMain : BaseActivity(), BottomSheetImagePicker.OnImagesSelectedListener {
 
         imageContainer.removeAllViews()
         uris.forEach { uri ->
-            val iv = LayoutInflater.from(this).inflate(R.layout.scrollitem_image, imageContainer, false) as ImageView
+            val iv = LayoutInflater.from(this).inflate(
+                R.layout.scrollitem_image,
+                imageContainer,
+                false
+            ) as ImageView
             imageContainer.addView(iv)
             Glide.with(this).load(uri).into(iv)
         }

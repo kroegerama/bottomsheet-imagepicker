@@ -19,9 +19,8 @@ public class AcMainJava extends BaseActivity implements BottomSheetImagePicker.O
 
     private ViewGroup imageContainer;
 
-    @Override
-    protected int getLayoutResource() {
-        return R.layout.ac_main;
+    public AcMainJava() {
+        super(R.layout.ac_main, 0);
     }
 
     @Override
