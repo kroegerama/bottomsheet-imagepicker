@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.ContentUris
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -20,7 +22,6 @@ import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
-import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
@@ -161,7 +162,7 @@ class BottomSheetImagePicker internal constructor() :
                 val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
                 bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
                 bottomSheetBehavior.peekHeight = resources.getDimensionPixelSize(peekHeight)
-                bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback)
+                bottomSheetBehavior.addBottomSheetCallback(bottomSheetCallback)
             }
         }
 
@@ -218,26 +219,27 @@ class BottomSheetImagePicker internal constructor() :
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (intent.resolveActivity(requireContext().packageManager) == null) return
-        val photoFile = try {
-            createImageFile()
+        val photoUri = try {
+            getPhotoUri()
         } catch (e: Exception) {
-            if (BuildConfig.DEBUG) Log.w(TAG, "could not create temp file", e)
+            if (BuildConfig.DEBUG) Log.w(TAG, "could not prepare image file", e)
             return
         }
-        val photoUri = FileProvider.getUriForFile(requireContext(), providerAuthority, photoFile)
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoUri = photoUri
+
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
         requireContext().packageManager.queryIntentActivities(
             intent,
             PackageManager.MATCH_DEFAULT_ONLY
-        )
-            .forEach { info ->
-                val packageName = info.activityInfo.packageName
-                requireContext().grantUriPermission(
-                    packageName,
-                    photoUri,
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
-                )
-            }
+        ).forEach { info ->
+            val packageName = info.activityInfo.packageName
+            requireContext().grantUriPermission(
+                packageName,
+                photoUri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
         startActivityForResult(intent, REQUEST_PHOTO)
     }
 
@@ -246,23 +248,35 @@ class BottomSheetImagePicker internal constructor() :
         startActivityForResult(intent, REQUEST_GALLERY)
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun createImageFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().time)
-        val imageFileName = "IMG_" + timeStamp + "_"
-        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-        storageDir.mkdirs()
-        val image = File.createTempFile(imageFileName, ".jpg", storageDir)
+    private fun getPhotoUri(): Uri? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val resolver = requireContext().contentResolver
+            val contentVals = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, getImageFileName() + ".jpg")
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
 
-        val success =
-            image.delete() //no need to create empty file; camera app will create it on success
-        if (!success && BuildConfig.DEBUG) {
-            Log.d(TAG, "Failed to delete temp file: $image")
+                //put images in DCIM folder
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/")
+            }
+            resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentVals)
+        } else {
+            val imageFileName = getImageFileName()
+            val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+            storageDir.mkdirs()
+            val image = File.createTempFile(imageFileName + "_", ".jpg", storageDir)
+
+            //no need to create empty file; camera app will create it on success
+            val success = image.delete()
+            if (!success && BuildConfig.DEBUG) {
+                Log.d(TAG, "Failed to delete temp file: $image")
+            }
+            Uri.fromFile(image)
         }
 
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoUri = Uri.fromFile(image)
-        return image
+    @SuppressLint("SimpleDateFormat")
+    private fun getImageFileName(): String {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().time)
+        return "IMG_$timeStamp"
     }
 
     override fun onRequestPermissionsResult(
