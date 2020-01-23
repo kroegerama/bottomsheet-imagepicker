@@ -33,8 +33,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
+    implementation 'com.google.android.material:material:1.1.0-rc02'
 
-    implementation 'com.kroegerama:android-kaiteki:2.9.0'
+    implementation 'com.kroegerama:android-kaiteki:2.9.1'
 
     implementation("com.github.bumptech.glide:glide:4.10.0") {
         exclude group: "com.android.support"
