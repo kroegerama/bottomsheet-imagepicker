@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
@@ -229,6 +230,8 @@ class BottomSheetImagePicker internal constructor() :
         currentPhotoUri = photoUri
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
         requireContext().packageManager.queryIntentActivities(
             intent,
             PackageManager.MATCH_DEFAULT_ONLY
@@ -270,7 +273,7 @@ class BottomSheetImagePicker internal constructor() :
             if (!success && BuildConfig.DEBUG) {
                 Log.d(TAG, "Failed to delete temp file: $image")
             }
-            Uri.fromFile(image)
+            FileProvider.getUriForFile(requireContext(), providerAuthority, image)
         }
 
     @SuppressLint("SimpleDateFormat")

@@ -13,7 +13,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 29
         versionCode 1
-        versionName "1.1.1"
+        versionName "1.1.2"
     }
     compileOptions {
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -41,9 +41,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
-    api 'com.google.android.material:material:1.1.0-rc01'
+    api 'com.google.android.material:material:1.1.0-rc02'
 
-    implementation 'com.kroegerama:android-kaiteki:2.9.0'
+    implementation 'com.kroegerama:android-kaiteki:2.9.1'
     implementation 'com.kroegerama:recyclerview-kaiteki:1.0.10'
 
     implementation("com.github.bumptech.glide:glide:$glide") {
