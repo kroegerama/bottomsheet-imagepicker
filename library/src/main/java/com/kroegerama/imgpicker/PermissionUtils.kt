@@ -14,7 +14,7 @@ internal val Context.hasReadStoragePermission get() = isPermissionGranted(Manife
 internal val Context.hasWriteStoragePermission get() = isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
 private fun Fragment.requestPermission(permission: String, requestCode: Int) {
-    if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
     if (context?.isPermissionGranted(permission) == true) return
     requestPermissions(arrayOf(permission), requestCode)
 }
