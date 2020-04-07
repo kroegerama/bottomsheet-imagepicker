@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Color
+import android.graphics.PorterDuff.Mode.SRC_IN
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -73,6 +74,12 @@ class BottomSheetImagePicker internal constructor() :
     @ColorInt
     private var bgColor = Color.WHITE
 
+    @ColorInt
+    private var textColor = Color.BLACK
+
+    @ColorInt
+    private var iconColor = Color.BLACK
+
     private var onImagesSelectedListener: OnImagesSelectedListener? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
@@ -117,6 +124,15 @@ class BottomSheetImagePicker internal constructor() :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.setBackgroundColor(bgColor)
+        headerContainer.setBackgroundColor(bgColor)
+        tvHeader.setTextColor(textColor)
+
+        btnClearSelection.setColorFilter(iconColor, SRC_IN)
+        btnGallery.setColorFilter(iconColor, SRC_IN)
+        btnCamera.setColorFilter(iconColor, SRC_IN)
+        btnDone.setColorFilter(iconColor, SRC_IN)
 
         tvHeader.setOnClickListener {
             if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
@@ -365,6 +381,9 @@ class BottomSheetImagePicker internal constructor() :
 
         peekHeight = args.getInt(KEY_PEEK_HEIGHT, peekHeight)
 
+        bgColor = args.getInt(BACKGROUND_COLOR, bgColor)
+        textColor = args.getInt(TEXT_COLOR, textColor)
+        iconColor = args.getInt(ICON_COLOR, iconColor)
 
         emptyRes = args.getInt(KEY_TEXT_EMPTY, emptyRes)
         loadingRes = args.getInt(KEY_TEXT_LOADING, loadingRes)
@@ -438,6 +457,8 @@ class BottomSheetImagePicker internal constructor() :
         private const val KEY_TEXT_LOADING = "loadingText"
 
         private const val BACKGROUND_COLOR = "backgroundColor"
+        private const val TEXT_COLOR = "textColor"
+        private const val ICON_COLOR = "iconColor"
 
         private const val KEY_PEEK_HEIGHT = "peekHeight"
 
@@ -497,7 +518,17 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
-        fun backgroundColor(@PluralsRes color: Int) = args.run {
+        fun textColor(@ColorInt color: Int) = args.run {
+            putInt(TEXT_COLOR, color)
+            this@Builder
+        }
+
+        fun iconColor(@ColorInt color: Int) = args.run {
+            putInt(ICON_COLOR, color)
+            this@Builder
+        }
+
+        fun backgroundColor(@ColorInt color: Int) = args.run {
             putInt(BACKGROUND_COLOR, color)
             this@Builder
         }
