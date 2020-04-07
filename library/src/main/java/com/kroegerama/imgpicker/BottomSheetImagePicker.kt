@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,9 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.DimenRes
-import androidx.annotation.PluralsRes
-import androidx.annotation.StringRes
+import androidx.annotation.*
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
@@ -70,6 +69,9 @@ class BottomSheetImagePicker internal constructor() :
     private var loadingRes = R.string.imagePickerLoading
     @StringRes
     private var emptyRes = R.string.imagePickerEmpty
+
+    @ColorInt
+    private var bgColor = Color.WHITE
 
     private var onImagesSelectedListener: OnImagesSelectedListener? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
@@ -157,6 +159,7 @@ class BottomSheetImagePicker internal constructor() :
         selectionCountChanged(adapter.selection.size)
     }
 
+    @RequiresApi(Build.VERSION_CODES.FROYO)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         super.onCreateDialog(savedInstanceState).apply {
             setOnShowListener {
@@ -362,6 +365,7 @@ class BottomSheetImagePicker internal constructor() :
 
         peekHeight = args.getInt(KEY_PEEK_HEIGHT, peekHeight)
 
+
         emptyRes = args.getInt(KEY_TEXT_EMPTY, emptyRes)
         loadingRes = args.getInt(KEY_TEXT_LOADING, loadingRes)
     }
@@ -433,6 +437,8 @@ class BottomSheetImagePicker internal constructor() :
         private const val KEY_TEXT_EMPTY = "emptyText"
         private const val KEY_TEXT_LOADING = "loadingText"
 
+        private const val BACKGROUND_COLOR = "backgroundColor"
+
         private const val KEY_PEEK_HEIGHT = "peekHeight"
 
         private const val STATE_CURRENT_URI = "stateUri"
@@ -491,8 +497,8 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
-        fun loadingText(@StringRes loadingRes: Int) = args.run {
-            putInt(KEY_TEXT_LOADING, loadingRes)
+        fun backgroundColor(@PluralsRes color: Int) = args.run {
+            putInt(BACKGROUND_COLOR, color)
             this@Builder
         }
 
@@ -507,10 +513,13 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
+        fun loadingText(@StringRes loadingRes: Int) = args.run {
+            putInt(KEY_TEXT_LOADING, loadingRes)
+            this@Builder
+        }
+
         fun build() = BottomSheetImagePicker().apply { arguments = args }
-
         fun show(fm: FragmentManager, tag: String? = null) = build().show(fm, tag)
-
     }
 }
 
