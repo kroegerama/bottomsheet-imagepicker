@@ -44,6 +44,11 @@ class AcMain : BaseActivity(
                 R.string.pick_multi_limit
             )
             .requestTag("multi")
+            .backgroundColor(Color.BLACK)
+            .textColor(Color.WHITE)
+            .iconColor(Color.WHITE)
+            .cameraButton(ButtonType.Button)
+            .galleryButton(ButtonType.None)
             .show(supportFragmentManager)
     }
 

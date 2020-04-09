@@ -153,8 +153,6 @@ class BottomSheetImagePicker internal constructor() :
         tvEmpty.setText(loadingRes)
 
         if (isMultiSelect) {
-            btnCamera.isVisible = false
-            btnGallery.isVisible = false
             btnDone.isVisible = true
             btnDone.setOnClickListener {
                 onImagesSelectedListener?.onImagesSelected(adapter.getSelectedImages(), requestTag)
