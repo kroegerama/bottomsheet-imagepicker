@@ -1,5 +1,16 @@
-[![Release](https://jitpack.io/v/kroegerama/bottomsheet-imagepicker.svg)](https://jitpack.io/#kroegerama/bottomsheet-imagepicker)
-[![Build Status](https://travis-ci.org/kroegerama/bottomsheet-imagepicker.svg?branch=master)](https://travis-ci.org/kroegerama/bottomsheet-imagepicker)
+[![Release](https://jitpack.io/v/rtsketo/bottomsheet-imagepicker.svg)](https://jitpack.io/#rtsketo/bottomsheet-imagepicker)
+
+# Fork Details
+
+This variation of the https://github.com/kroegerama/bottomsheet-imagepicker library:
+* Restores the functionality to enable Camera and Gallery button in MultiSelect.
+* * cameraButton(ButtonType.Button) to enable.
+* * galleryButton(ButtonType.None) to disable.
+* Adds the functionality of changing the color of Background, Text and Icons programmatically.
+* * backgroundColor(color: ColorInt) to change the background color.
+* * textColor(color: ColorInt) to change the text color.
+* * iconColor(color: ColorInt) to change the icon color.
+
 
 # BottomSheet Image Picker for Android
 
