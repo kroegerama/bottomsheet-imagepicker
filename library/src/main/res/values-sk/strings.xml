@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="imagePickerEmpty">" Nenašli sa žiadne obrázky"</string>
+    <string name="imagePickerEmpty">"Nenašli sa žiadne obrázky"</string>
     <string name="imagePickerSingle">Vyberte obrázok</string>
 
     <plurals name="imagePickerMulti" tools:ignore="MissingQuantity">
@@ -15,4 +15,5 @@
 
     <string name="toastImagePickerNoWritePermission">Prístup zakázaný alebo obmedzený</string>
     <string name="imagePickerMultiLimit">Vybrali ste viac ako %1$d obrázkov</string>
+    <string name="imagePickerLoading" translatable="false">Prebieha načítavanie...</string>
 </resources>
