@@ -14,4 +14,5 @@
     </plurals>
 
     <string name="toastImagePickerNoWritePermission">Prístup zakázaný alebo obmedzený</string>
+    <string name="imagePickerMultiLimit">Vybrali ste viac ako %1$d obrázkov</string>
 </resources>
