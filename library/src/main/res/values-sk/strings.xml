@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="imagePickerEmpty">" Nenašli sa žiadne obrázky"</string>
+    <string name="imagePickerSingle">Vyberte obrázok</string>
+
+    <plurals name="imagePickerMulti" tools:ignore="MissingQuantity">
+        <item quantity="one">Jeden obrázok vybraný</item>
+        <item quantity="other">%1$d obrázkov vybraných</item>
+    </plurals>
+
+    <plurals name="imagePickerMultiMore" tools:ignore="MissingQuantity">
+        <item quantity="one">Vyberte ešte jeden obrázok</item>
+        <item quantity="other">Vyberte ešte %1$d obrázkov</item>
+    </plurals>
+
+    <string name="toastImagePickerNoWritePermission">Prístup zakázaný alebo obmedzený</string>
+</resources>

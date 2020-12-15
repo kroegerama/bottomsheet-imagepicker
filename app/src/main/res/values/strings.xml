@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BottomSheet Demo</string>
+    <string name="app_name" translatable="false">BottomSheet Demo</string>
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 
