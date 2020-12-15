@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Color
+import android.graphics.PorterDuff.Mode.SRC_IN
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,9 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.DimenRes
-import androidx.annotation.PluralsRes
-import androidx.annotation.StringRes
+import androidx.annotation.*
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
@@ -71,6 +71,15 @@ class BottomSheetImagePicker internal constructor() :
     @StringRes
     private var emptyRes = R.string.imagePickerEmpty
 
+    @ColorInt
+    private var bgColor = Color.WHITE
+
+    @ColorInt
+    private var textColor = Color.BLACK
+
+    @ColorInt
+    private var iconColor = Color.BLACK
+
     private var onImagesSelectedListener: OnImagesSelectedListener? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
@@ -116,6 +125,15 @@ class BottomSheetImagePicker internal constructor() :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.setBackgroundColor(bgColor)
+        headerContainer.setBackgroundColor(bgColor)
+        tvHeader.setTextColor(textColor)
+
+        btnClearSelection.setColorFilter(iconColor, SRC_IN)
+        btnGallery.setColorFilter(iconColor, SRC_IN)
+        btnCamera.setColorFilter(iconColor, SRC_IN)
+        btnDone.setColorFilter(iconColor, SRC_IN)
+
         tvHeader.setOnClickListener {
             if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -135,8 +153,6 @@ class BottomSheetImagePicker internal constructor() :
         tvEmpty.setText(loadingRes)
 
         if (isMultiSelect) {
-            btnCamera.isVisible = false
-            btnGallery.isVisible = false
             btnDone.isVisible = true
             btnDone.setOnClickListener {
                 onImagesSelectedListener?.onImagesSelected(adapter.getSelectedImages(), requestTag)
@@ -157,6 +173,7 @@ class BottomSheetImagePicker internal constructor() :
         selectionCountChanged(adapter.selection.size)
     }
 
+    @RequiresApi(Build.VERSION_CODES.FROYO)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         super.onCreateDialog(savedInstanceState).apply {
             setOnShowListener {
@@ -362,6 +379,10 @@ class BottomSheetImagePicker internal constructor() :
 
         peekHeight = args.getInt(KEY_PEEK_HEIGHT, peekHeight)
 
+        bgColor = args.getInt(BACKGROUND_COLOR, bgColor)
+        textColor = args.getInt(TEXT_COLOR, textColor)
+        iconColor = args.getInt(ICON_COLOR, iconColor)
+
         emptyRes = args.getInt(KEY_TEXT_EMPTY, emptyRes)
         loadingRes = args.getInt(KEY_TEXT_LOADING, loadingRes)
     }
@@ -433,6 +454,10 @@ class BottomSheetImagePicker internal constructor() :
         private const val KEY_TEXT_EMPTY = "emptyText"
         private const val KEY_TEXT_LOADING = "loadingText"
 
+        private const val BACKGROUND_COLOR = "backgroundColor"
+        private const val TEXT_COLOR = "textColor"
+        private const val ICON_COLOR = "iconColor"
+
         private const val KEY_PEEK_HEIGHT = "peekHeight"
 
         private const val STATE_CURRENT_URI = "stateUri"
@@ -491,8 +516,18 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
-        fun loadingText(@StringRes loadingRes: Int) = args.run {
-            putInt(KEY_TEXT_LOADING, loadingRes)
+        fun textColor(@ColorInt color: Int) = args.run {
+            putInt(TEXT_COLOR, color)
+            this@Builder
+        }
+
+        fun iconColor(@ColorInt color: Int) = args.run {
+            putInt(ICON_COLOR, color)
+            this@Builder
+        }
+
+        fun backgroundColor(@ColorInt color: Int) = args.run {
+            putInt(BACKGROUND_COLOR, color)
             this@Builder
         }
 
@@ -507,10 +542,13 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
+        fun loadingText(@StringRes loadingRes: Int) = args.run {
+            putInt(KEY_TEXT_LOADING, loadingRes)
+            this@Builder
+        }
+
         fun build() = BottomSheetImagePicker().apply { arguments = args }
-
         fun show(fm: FragmentManager, tag: String? = null) = build().show(fm, tag)
-
     }
 }
 

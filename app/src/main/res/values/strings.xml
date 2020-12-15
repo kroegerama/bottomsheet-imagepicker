@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BottomSheet Demo</string>
+    <string name="app_name" translatable="false">BottomSheet Demo</string>
 
     <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
 
@@ -14,4 +14,8 @@
         <item quantity="other">Please select %1$d more images…</item>
     </plurals>
     <string name="pick_multi_limit">You have more than %1$d images selected…</string>
+    <string name="single">Single</string>
+    <string name="multi">Multi</string>
+    <string name="your_selection">Your selection:</string>
+    <string name="clear">Clear</string>
 </resources>

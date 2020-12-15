@@ -1,5 +1,6 @@
 package com.kroegerama.imgpicker.demo
 
+import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -26,6 +27,9 @@ class AcMain : BaseActivity(
             .galleryButton(ButtonType.Button)
             .singleSelectTitle(R.string.pick_single)
             .peekHeight(R.dimen.peekHeight)
+            .backgroundColor(Color.BLACK)
+            .textColor(Color.WHITE)
+            .iconColor(Color.WHITE)
             .requestTag("single")
             .show(supportFragmentManager)
     }
@@ -40,6 +44,11 @@ class AcMain : BaseActivity(
                 R.string.pick_multi_limit
             )
             .requestTag("multi")
+            .backgroundColor(Color.BLACK)
+            .textColor(Color.WHITE)
+            .iconColor(Color.WHITE)
+            .cameraButton(ButtonType.Button)
+            .galleryButton(ButtonType.None)
             .show(supportFragmentManager)
     }
 

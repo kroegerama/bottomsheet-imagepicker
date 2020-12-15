@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pick_single">Vyberte obrázok</string>
+    <string name="pick_multi_limit">Vyberte ešte %1$d obrázkov</string>
+    <string name="single">Jeden</string>
+    <string name="multi">Viacero</string>
+    <string name="your_selection">Váš výber:</string>
+    <string name="clear">Vymazať</string>
+</resources>
