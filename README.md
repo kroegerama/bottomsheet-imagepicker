@@ -2,7 +2,7 @@
 
 # Fork Details
 
-This variation of the https://github.com/kroegerama/bottomsheet-imagepicker library:
+This is a variation of the https://github.com/kroegerama/bottomsheet-imagepicker library, with the following changes:
 * Restores the functionality of enabling Camera and Gallery button in MultiSelect.
 * * cameraButton(ButtonType.Button) to enable.
 * * galleryButton(ButtonType.None) to disable.
