@@ -3,10 +3,7 @@ package com.kroegerama.imgpicker
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
-import android.content.ContentUris
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
@@ -31,6 +28,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kroegerama.kaiteki.BuildConfig
 import com.kroegerama.kaiteki.recyclerview.layout.AutofitLayoutManager
 import kotlinx.android.synthetic.main.imagepicker.*
 import java.io.File
@@ -56,18 +54,25 @@ class BottomSheetImagePicker internal constructor() :
 
     @StringRes
     private var resTitleSingle = R.string.imagePickerSingle
+
     @PluralsRes
     private var resTitleMulti = R.plurals.imagePickerMulti
+
     @PluralsRes
     private var resTitleMultiMore = R.plurals.imagePickerMultiMore
+
     @StringRes
     private var resTitleMultiLimit = R.string.imagePickerMultiLimit
+
     @DimenRes
     private var peekHeight = R.dimen.imagePickerPeekHeight
+
     @DimenRes
     private var columnSizeRes = R.dimen.imagePickerColumnSize
+
     @StringRes
     private var loadingRes = R.string.imagePickerLoading
+
     @StringRes
     private var emptyRes = R.string.imagePickerEmpty
 
@@ -218,8 +223,12 @@ class BottomSheetImagePicker internal constructor() :
             return
         }
 
+        if (!requireContext().hasCameraPermission) {
+            requestCameraPermission(REQUEST_PERMISSION_CAMERA)
+            return
+        }
+
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(requireContext().packageManager) == null) return
         val photoUri = try {
             getPhotoUri()
         } catch (e: Exception) {
@@ -243,7 +252,12 @@ class BottomSheetImagePicker internal constructor() :
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
             )
         }
-        startActivityForResult(intent, REQUEST_PHOTO)
+
+        try {
+            startActivityForResult(intent, REQUEST_PHOTO)
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
     }
 
     private fun launchGallery() {
@@ -264,7 +278,8 @@ class BottomSheetImagePicker internal constructor() :
             resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentVals)
         } else {
             val imageFileName = getImageFileName()
-            val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+            val storageDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
             storageDir.mkdirs()
             val image = File.createTempFile(imageFileName + "_", ".jpg", storageDir)
 
@@ -293,6 +308,15 @@ class BottomSheetImagePicker internal constructor() :
                     LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this)
                 else dismissAllowingStateLoss()
             REQUEST_PERMISSION_WRITE_STORAGE ->
+                if (grantResults.isPermissionGranted)
+                    launchCamera()
+                else
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.toastImagePickerNoWritePermission,
+                        Toast.LENGTH_LONG
+                    ).show()
+            REQUEST_PERMISSION_CAMERA ->
                 if (grantResults.isPermissionGranted)
                     launchCamera()
                 else
@@ -409,6 +433,7 @@ class BottomSheetImagePicker internal constructor() :
 
         private const val REQUEST_PERMISSION_READ_STORAGE = 0x2000
         private const val REQUEST_PERMISSION_WRITE_STORAGE = 0x2001
+        private const val REQUEST_PERMISSION_CAMERA = 0x2002
 
         private const val REQUEST_PHOTO = 0x3000
         private const val REQUEST_GALLERY = 0x3001
