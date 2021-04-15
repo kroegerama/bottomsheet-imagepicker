@@ -218,6 +218,11 @@ class BottomSheetImagePicker internal constructor() :
             return
         }
 
+        if(!requireContext().hasCameraPermission){
+            requestCameraPermission(REQUEST_PERMISSION_CAMERA)
+            return
+        }
+
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (intent.resolveActivity(requireContext().packageManager) == null) return
         val photoUri = try {
@@ -293,6 +298,15 @@ class BottomSheetImagePicker internal constructor() :
                     LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this)
                 else dismissAllowingStateLoss()
             REQUEST_PERMISSION_WRITE_STORAGE ->
+                if (grantResults.isPermissionGranted)
+                    launchCamera()
+                else
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.toastImagePickerNoWritePermission,
+                        Toast.LENGTH_LONG
+                    ).show()
+            REQUEST_PERMISSION_CAMERA ->
                 if (grantResults.isPermissionGranted)
                     launchCamera()
                 else
@@ -409,6 +423,7 @@ class BottomSheetImagePicker internal constructor() :
 
         private const val REQUEST_PERMISSION_READ_STORAGE = 0x2000
         private const val REQUEST_PERMISSION_WRITE_STORAGE = 0x2001
+        private const val REQUEST_PERMISSION_CAMERA = 0x2002
 
         private const val REQUEST_PHOTO = 0x3000
         private const val REQUEST_GALLERY = 0x3001
