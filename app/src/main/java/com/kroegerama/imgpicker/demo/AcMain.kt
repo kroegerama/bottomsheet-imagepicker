@@ -25,6 +25,7 @@ class AcMain : BaseActivity(
             .cameraButton(ButtonType.Button)
             .galleryButton(ButtonType.Button)
             .singleSelectTitle(R.string.pick_single)
+            .backgroundDrawable(R.drawable.background_picker_default)
             .peekHeight(R.dimen.peekHeight)
             .requestTag("single")
             .show(supportFragmentManager)

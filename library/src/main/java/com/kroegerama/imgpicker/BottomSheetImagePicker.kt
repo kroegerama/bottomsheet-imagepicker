@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
@@ -31,6 +32,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kroegerama.kaiteki.BuildConfig
 import com.kroegerama.kaiteki.recyclerview.layout.AutofitLayoutManager
 import kotlinx.android.synthetic.main.imagepicker.*
 import java.io.File
@@ -56,20 +58,42 @@ class BottomSheetImagePicker internal constructor() :
 
     @StringRes
     private var resTitleSingle = R.string.imagePickerSingle
+
     @PluralsRes
     private var resTitleMulti = R.plurals.imagePickerMulti
+
     @PluralsRes
     private var resTitleMultiMore = R.plurals.imagePickerMultiMore
+
     @StringRes
     private var resTitleMultiLimit = R.string.imagePickerMultiLimit
+
     @DimenRes
     private var peekHeight = R.dimen.imagePickerPeekHeight
+
     @DimenRes
     private var columnSizeRes = R.dimen.imagePickerColumnSize
+
     @StringRes
     private var loadingRes = R.string.imagePickerLoading
+
     @StringRes
     private var emptyRes = R.string.imagePickerEmpty
+
+    @DrawableRes
+    private var cameraIcon = R.drawable.ic_camera_btn
+
+    @DrawableRes
+    private var galleryIcon = R.drawable.ic_gallery_btn
+
+    @DrawableRes
+    private var doneIcon = R.drawable.ic_done_btn
+
+    @DrawableRes
+    private var clearSelectionIcon = R.drawable.ic_clear
+
+    @DrawableRes
+    private var backgroundDrawable = R.drawable.background_picker_default
 
     private var onImagesSelectedListener: OnImagesSelectedListener? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
@@ -133,6 +157,13 @@ class BottomSheetImagePicker internal constructor() :
         }
         tvHeader.setText(resTitleSingle)
         tvEmpty.setText(loadingRes)
+
+        btnCamera.setImageResource(cameraIcon)
+        btnClearSelection.setImageResource(clearSelectionIcon)
+        btnDone.setImageResource(doneIcon)
+        btnGallery.setImageResource(galleryIcon)
+
+        rootLayout.setBackgroundResource(backgroundDrawable)
 
         if (isMultiSelect) {
             btnCamera.isVisible = false
@@ -264,7 +295,8 @@ class BottomSheetImagePicker internal constructor() :
             resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentVals)
         } else {
             val imageFileName = getImageFileName()
-            val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+            val storageDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
             storageDir.mkdirs()
             val image = File.createTempFile(imageFileName + "_", ".jpg", storageDir)
 
@@ -360,6 +392,11 @@ class BottomSheetImagePicker internal constructor() :
         resTitleMultiMore = args.getInt(KEY_TITLE_RES_MULTI_MORE, resTitleMultiMore)
         resTitleMultiLimit = args.getInt(KEY_TITLE_RES_MULTI_LIMIT, resTitleMultiLimit)
 
+        cameraIcon = args.getInt(KEY_CAMERA_ICON, R.drawable.ic_camera_btn)
+        clearSelectionIcon = args.getInt(KEY_CLEAR_SELECTION_ICON, R.drawable.ic_selection)
+        doneIcon = args.getInt(KEY_DONE_ICON, R.drawable.ic_done_btn)
+        galleryIcon = args.getInt(KEY_GALLERY_ICON, R.drawable.ic_gallery_btn)
+
         peekHeight = args.getInt(KEY_PEEK_HEIGHT, peekHeight)
 
         emptyRes = args.getInt(KEY_TEXT_EMPTY, emptyRes)
@@ -416,6 +453,12 @@ class BottomSheetImagePicker internal constructor() :
         private const val KEY_PROVIDER = "provider"
         private const val KEY_REQUEST_TAG = "requestTag"
 
+        private const val KEY_CAMERA_ICON = "cameraIcon"
+        private const val KEY_GALLERY_ICON = "galleryIcon"
+        private const val KEY_DONE_ICON = "doneIcon"
+        private const val KEY_CLEAR_SELECTION_ICON = "clearSelectionIcon"
+        private const val KEY_BACKGROUND_DRAWABLE = "backgroundDrawable"
+
         private const val KEY_MULTI_SELECT = "multiSelect"
         private const val KEY_MULTI_SELECT_MIN = "multiSelectMin"
         private const val KEY_MULTI_SELECT_MAX = "multiSelectMax"
@@ -464,15 +507,44 @@ class BottomSheetImagePicker internal constructor() :
             this@Builder
         }
 
-        fun cameraButton(type: ButtonType) = args.run {
-            putBoolean(KEY_SHOW_CAMERA_BTN, type == ButtonType.Button)
-            putBoolean(KEY_SHOW_CAMERA_TILE, type == ButtonType.Tile)
+        fun backgroundDrawable(
+            @DrawableRes drawRes: Int? = null
+        ) = args.run {
+            drawRes?.let { putInt(KEY_BACKGROUND_DRAWABLE, it) }
             this@Builder
         }
 
-        fun galleryButton(type: ButtonType) = args.run {
+        fun doneIcon(
+            @DrawableRes icRes: Int = R.drawable.ic_done_btn
+        ) = args.run {
+            putInt(KEY_DONE_ICON, icRes)
+            this@Builder
+        }
+
+        fun clearSelectionIcon(
+            @DrawableRes icRes: Int = R.drawable.ic_clear
+        ) = args.run {
+            putInt(KEY_CLEAR_SELECTION_ICON, icRes)
+            this@Builder
+        }
+
+        fun cameraButton(
+            type: ButtonType,
+            @DrawableRes icRes: Int = if (type == ButtonType.Button) R.drawable.ic_camera_btn else R.drawable.ic_camera_tile
+        ) = args.run {
+            putBoolean(KEY_SHOW_CAMERA_BTN, type == ButtonType.Button)
+            putBoolean(KEY_SHOW_CAMERA_TILE, type == ButtonType.Tile)
+            putInt(KEY_CAMERA_ICON, icRes)
+            this@Builder
+        }
+
+        fun galleryButton(
+            type: ButtonType,
+            @DrawableRes icRes: Int = if (type == ButtonType.Button) R.drawable.ic_gallery_btn else R.drawable.ic_gallery_tile
+        ) = args.run {
             putBoolean(KEY_SHOW_GALLERY_BTN, type == ButtonType.Button)
             putBoolean(KEY_SHOW_GALLERY_TILE, type == ButtonType.Tile)
+            putInt(KEY_GALLERY_ICON, icRes)
             this@Builder
         }
 
