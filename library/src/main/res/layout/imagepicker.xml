@@ -4,7 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/rootLayout"
+    android:background="@drawable/background_picker_default"
     android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="32dp"
+            android:text="@string/imagePickerLoading"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/headerContainer"
@@ -13,18 +39,6 @@
         android:layout_gravity="bottom"
         android:background="#fff"
         app:elevation="3dp">
-
-        <TextView
-            android:id="@+id/tvHeader"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="0dp"
-            android:text="@string/imagePickerSingle"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         <ImageButton
             android:id="@+id/btnClearSelection"
@@ -63,6 +77,18 @@
             android:src="@drawable/ic_camera_btn"
             android:visibility="gone"
             tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="0dp"
+            android:text="@string/imagePickerSingle"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -76,29 +102,5 @@
         android:paddingBottom="@dimen/imagePickerTileSpacing"
         android:scrollbarStyle="outsideOverlay"
         tools:listitem="@layout/tile_image" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ProgressBar
-            android:id="@+id/progress"
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true" />
-
-        <TextView
-            android:id="@+id/tvEmpty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingStart="16dp"
-            android:paddingTop="32dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="32dp"
-            android:text="@string/imagePickerLoading"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-    </FrameLayout>
 
 </LinearLayout>
